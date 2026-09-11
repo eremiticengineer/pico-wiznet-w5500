@@ -1,0 +1,9 @@
+[submodule "lib/FreeRTOS-Kernel"]
+	path = lib/FreeRTOS-Kernel
+	url = https://github.com/raspberrypi/FreeRTOS-Kernel.git
+[submodule "lib/ioLibrary_Driver"]
+	path = lib/ioLibrary_Driver
+	url = https://github.com/Wiznet/ioLibrary_Driver.git
+[submodule "lib/WIZnet-PICO-FREERTOS-C"]
+	path = lib/WIZnet-PICO-FREERTOS-C
+	url = https://github.com/WIZnet-ioNIC/WIZnet-PICO-FREERTOS-C.git

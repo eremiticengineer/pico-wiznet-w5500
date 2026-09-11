@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cp build/pico_wiznet_w5500_example.uf2 /media/pi/RPI-RP2
