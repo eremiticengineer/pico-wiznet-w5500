@@ -176,26 +176,64 @@ bool WiznetW5500::resolve_host(const std::string& host, uint8_t out_ip[4]) {
     return true;
 }
 
-int WiznetW5500::tls_send(void* ctx, const unsigned char* buf, size_t len) {
-    const auto socket_number = static_cast<uint8_t>(reinterpret_cast<uintptr_t>(ctx));
-    const int32_t result = send(socket_number, const_cast<uint8_t*>(buf), static_cast<uint16_t>(len));
+int WiznetW5500::tls_send(
+    void* ctx,
+    const unsigned char* buf,
+    size_t len
+) {
+    const auto socket_number =
+        static_cast<uint8_t>(reinterpret_cast<uintptr_t>(ctx));
 
-    if (result < 0) {
-        return MBEDTLS_ERR_SSL_INTERNAL_ERROR;
+    const int32_t result = send(
+        socket_number,
+        const_cast<uint8_t*>(buf),
+        static_cast<uint16_t>(len)
+    );
+
+    if (result > 0) {
+        return static_cast<int>(result);
     }
 
-    return static_cast<int>(result);
+    if (result == SOCK_BUSY) {
+        return MBEDTLS_ERR_SSL_WANT_WRITE;
+    }
+
+    return MBEDTLS_ERR_SSL_INTERNAL_ERROR;
 }
 
-int WiznetW5500::tls_recv(void* ctx, unsigned char* buf, size_t len) {
-    const auto socket_number = static_cast<uint8_t>(reinterpret_cast<uintptr_t>(ctx));
-    const int32_t result = recv(socket_number, buf, static_cast<uint16_t>(len));
+int WiznetW5500::tls_recv(
+    void* ctx,
+    unsigned char* buf,
+    size_t len
+) {
+    const auto socket_number =
+        static_cast<uint8_t>(reinterpret_cast<uintptr_t>(ctx));
 
-    if (result < 0) {
-        return MBEDTLS_ERR_SSL_INTERNAL_ERROR;
+    const int32_t result = recv(
+        socket_number,
+        buf,
+        static_cast<uint16_t>(len)
+    );
+
+    if (result > 0) {
+        return static_cast<int>(result);
     }
 
-    return static_cast<int>(result);
+    if (result == SOCK_BUSY) {
+        return MBEDTLS_ERR_SSL_WANT_READ;
+    }
+
+    if (result == SOCKERR_SOCKSTATUS ||
+        result == SOCKERR_SOCKCLOSED) {
+        return 0;
+    }
+
+    printf(
+        "W5500 recv failed: %ld\n",
+        static_cast<long>(result)
+    );
+
+    return MBEDTLS_ERR_SSL_INTERNAL_ERROR;
 }
 
 bool WiznetW5500::https_get(const std::string& host, uint16_t port, const std::string& path,
@@ -417,6 +455,8 @@ bool WiznetW5500::perform_https_request(const std::string& host, uint16_t port, 
             ) {
                 continue;
             }
+
+            printf("mbedtls_ssl_read failed: %d (0x%04X)\n", result, static_cast<unsigned int>(-result));
 
             error_message_ = "TLS read failed";
 
