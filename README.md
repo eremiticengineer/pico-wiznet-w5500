@@ -6,7 +6,7 @@ WIZnet ioLibrary_Driver, the WIZnet Pico SPI port, DHCP/DNS, and Mbed TLS.
 ## Cloning the project
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/eremiticengineer/pico-wiznet-w5500
 
 cd pico-wiznet-w5500
 
