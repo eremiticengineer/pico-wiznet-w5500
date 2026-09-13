@@ -76,3 +76,7 @@ and decisions that led to it.
 - [Getting Started with Ethernet Examples](https://github.com/Wiznet/RP2040-HAT-C/blob/main/getting_started.md)
 - [mbedTLS](https://sourcevu.sysprogs.com/stm32/Libraries/mbedTLS/)
 - [Embedded C Coding Standard](https://barrgroup.com/embedded-c-coding-standard)
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
